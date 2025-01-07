@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 import pandas as pd
 
 def export_large_id_json(df, saveloc):
@@ -9,6 +10,7 @@ def export_large_id_json(df, saveloc):
     df -- Pandas dataframe containing columns for ID, name, and units
     saveloc -- location to save JSON file to
     """
+
     df.to_json(saveloc, orient="records")
 
 
@@ -44,6 +46,10 @@ def main():
     trim_df = df[df["id"].isin(ids_used)]
     trim_df = trim_df.drop(columns=["rank", "nutrient_nbr"])
 
+    if not Path("data").exists():
+        os.mkdir("data")
+        os.mkdir("data/nutrient")
+    
     export_large_id_json(trim_df, Path("data/nutrition_full.json"))
     export_individual_json(trim_df, Path("data/nutrient"))
 
